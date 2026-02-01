@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, useSearchParams, useNavigate } from 'react-router-dom';
+import React from 'react';
 import Home from './pages/Home';
 import GameLobby from './pages/GameLobby';
 import Game from './pages/Game';
@@ -7,17 +8,54 @@ import Game from './pages/Game';
 function Landing() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const [showPrompt, setShowPrompt] = React.useState(false);
+  const [username, setUsername] = React.useState('');
   const roomId = searchParams.get('roomId');
 
-  if (roomId) {
-    // Prompt for username and redirect to lobby
-    const username = prompt('Enter your name to join the game:');
-    if (username) {
-      navigate(`/lobby?roomId=${roomId}&username=${encodeURIComponent(username)}`);
-    } else {
-      navigate('/');
+  React.useEffect(() => {
+    if (roomId) {
+      setShowPrompt(true);
     }
-    return null;
+  }, [roomId]);
+
+  const handleJoin = () => {
+    if (username.trim()) {
+      navigate(`/lobby?roomId=${roomId}&username=${encodeURIComponent(username)}`);
+    }
+  };
+
+  const handleCancel = () => {
+    navigate('/');
+  };
+
+  if (showPrompt) {
+    return (
+      <div className="main-content">
+        <div className="card">
+          <h2 className="card-header">Join Game Room</h2>
+          <div className="input-group">
+            <label className="input-label">Enter your name to join:</label>
+            <input
+              type="text"
+              className="input"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleJoin()}
+              autoFocus
+              placeholder="Your name"
+            />
+          </div>
+          <div style={{ display: 'flex', gap: '1rem' }}>
+            <button className="btn btn-primary" onClick={handleJoin} style={{ flex: 1 }}>
+              Join Game
+            </button>
+            <button className="btn btn-secondary" onClick={handleCancel} style={{ flex: 1 }}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return <Home />;

@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './LankaTriviaGame.css';
 
 function LankaTriviaGame({ socket, roomId }) {
+  const navigate = useNavigate();
   const [gameState, setGameState] = useState(null);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [answered, setAnswered] = useState(false);
@@ -95,7 +97,7 @@ function LankaTriviaGame({ socket, roomId }) {
 
           <button
             className="btn btn-primary"
-            onClick={() => window.location.href = '/'}
+            onClick={() => navigate('/')}
             style={{ width: '100%', marginTop: '2rem' }}
           >
             Back to Home
