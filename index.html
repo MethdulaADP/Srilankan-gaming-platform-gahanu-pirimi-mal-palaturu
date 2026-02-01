@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ගැහැණු පිරිමි මල් පලතුරැ - Traditional Sri Lankan Games</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'sl-paper': '#0F172A',    // Slate 900 (Main BG)
+            'sl-sand': '#1E293B',     // Slate 800 (Card BG)
+            'sl-maroon': '#E11D48',   // Rose 600 (Primary Action)
+            'sl-terracotta': '#F97316', // Orange 500 (Secondary)
+            'sl-gold': '#FBBF24',     // Amber 400 (Highlights)
+            'sl-brown': '#F8FAFC',    // Slate 50 (Main Text)
+            'sl-clay': '#94A3B8',     // Slate 400 (Secondary Text)
+          },
+          fontFamily: {
+            sans: ['"Outfit"', 'sans-serif'],
+            serif: ['"Cinzel"', 'serif'],
+          },
+          backgroundImage: {
+            'batik-pattern': "linear-gradient(to bottom right, #0F172A, #1E293B), url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2394A3B8' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
+          },
+          boxShadow: {
+            'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.5)',
+            'card': '0 10px 40px -10px rgba(0, 0, 0, 0.6)',
+            'glow': '0 0 15px rgba(225, 29, 72, 0.3)',
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-out',
+            'slide-up': 'slideUp 0.6s ease-out',
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideUp: {
+              '0%': { transform: 'translateY(20px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-10px)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Cinzel:wght@400;700;900&family=Noto+Sans+Sinhala:wght@400;700&display=swap"
+    rel="stylesheet">
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "d3": "https://esm.sh/d3@^7.9.0"
+  }
+}
+</script>
+  <style>
+    ::-webkit-scrollbar {
+      width: 4px;
+      /* Minimized width */
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+      /* Seamless blend */
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #A64B2A;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #E11D48;
+      /* Brighter highlight on hover */
+    }
+
+    /* GLOBAL SCROLL RESET FIX */
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      overflow-anchor: none;
+      /* Prevents browser from adjusting scroll position due to content shifts */
+      scroll-behavior: auto !important;
+      /* Forces instant scroll instead of smooth, preventing offsets on load */
+    }
+  </style>
+  <link rel="stylesheet" href="/index.css">
+</head>
+
+<body class="bg-sl-paper text-sl-brown antialiased selection:bg-sl-maroon selection:text-white font-sans">
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+
+</html>
