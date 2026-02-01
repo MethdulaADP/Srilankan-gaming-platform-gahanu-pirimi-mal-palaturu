@@ -58,8 +58,13 @@ function GameLobby() {
       setPlayers(prev => prev.filter(p => p.id !== leftPlayerId));
     });
 
-    socket.on('gameStarted', () => {
-      navigate(`/game?roomId=${roomId}&gameType=${gameType}`);
+    socket.on('gameStarted', (data) => {
+      // Use roomId and gameType from the current state or from the event data
+      const navRoomId = roomId || data.roomId;
+      const navGameType = gameType || data.gameType;
+      if (navRoomId && navGameType) {
+        navigate(`/game?roomId=${navRoomId}&gameType=${navGameType}`);
+      }
     });
 
     socket.on('error', (data) => {

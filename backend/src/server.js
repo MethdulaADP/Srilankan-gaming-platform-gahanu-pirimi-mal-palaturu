@@ -51,24 +51,32 @@ io.on('connection', (socket) => {
     const roomId = uuidv4();
     const playerId = socket.id;
     
-    // Create room in database
-    db.prepare('INSERT INTO rooms (id, game_type, host_id) VALUES (?, ?, ?)').run(roomId, gameType, playerId);
-    db.prepare('INSERT INTO players (id, room_id, username) VALUES (?, ?, ?)').run(playerId, roomId, username);
-    
-    // Initialize game
-    let game;
-    if (gameType === 'aksharaKeliya') {
-      game = new AksharaKeliya(roomId);
-    } else if (gameType === 'lankaTrivia') {
-      game = new LankaTrivia(roomId);
+    try {
+      // Create room in database
+      db.prepare('INSERT INTO rooms (id, game_type, host_id) VALUES (?, ?, ?)').run(roomId, gameType, playerId);
+      
+      // Delete existing player record if any (in case of reconnection)
+      db.prepare('DELETE FROM players WHERE id = ?').run(playerId);
+      db.prepare('INSERT INTO players (id, room_id, username) VALUES (?, ?, ?)').run(playerId, roomId, username);
+      
+      // Initialize game
+      let game;
+      if (gameType === 'aksharaKeliya') {
+        game = new AksharaKeliya(roomId);
+      } else if (gameType === 'lankaTrivia') {
+        game = new LankaTrivia(roomId);
+      }
+      
+      activeGames.set(roomId, game);
+      playerSockets.set(playerId, { socket, roomId, username });
+      
+      socket.join(roomId);
+      socket.emit('roomCreated', { roomId, gameType, playerId });
+      io.to(roomId).emit('playerJoined', { playerId, username });
+    } catch (error) {
+      console.error('Error creating room:', error);
+      socket.emit('error', { message: 'Failed to create room' });
     }
-    
-    activeGames.set(roomId, game);
-    playerSockets.set(playerId, { socket, roomId, username });
-    
-    socket.join(roomId);
-    socket.emit('roomCreated', { roomId, gameType, playerId });
-    io.to(roomId).emit('playerJoined', { playerId, username });
   });
 
   socket.on('joinRoom', ({ roomId, username }) => {
@@ -92,17 +100,25 @@ io.on('connection', (socket) => {
     }
     
     const playerId = socket.id;
-    db.prepare('INSERT INTO players (id, room_id, username) VALUES (?, ?, ?)').run(playerId, roomId, username);
     
-    playerSockets.set(playerId, { socket, roomId, username });
-    socket.join(roomId);
-    
-    socket.emit('roomJoined', { roomId, gameType: room.game_type, playerId });
-    io.to(roomId).emit('playerJoined', { playerId, username });
-    
-    // Send current players to the new player
-    const allPlayers = db.prepare('SELECT * FROM players WHERE room_id = ?').all(roomId);
-    socket.emit('playersList', allPlayers.map(p => ({ id: p.id, username: p.username, score: p.score })));
+    try {
+      // Delete existing player record if any (in case of reconnection)
+      db.prepare('DELETE FROM players WHERE id = ?').run(playerId);
+      db.prepare('INSERT INTO players (id, room_id, username) VALUES (?, ?, ?)').run(playerId, roomId, username);
+      
+      playerSockets.set(playerId, { socket, roomId, username });
+      socket.join(roomId);
+      
+      socket.emit('roomJoined', { roomId, gameType: room.game_type, playerId });
+      io.to(roomId).emit('playerJoined', { playerId, username });
+      
+      // Send current players to the new player
+      const allPlayers = db.prepare('SELECT * FROM players WHERE room_id = ?').all(roomId);
+      socket.emit('playersList', allPlayers.map(p => ({ id: p.id, username: p.username, score: p.score })));
+    } catch (error) {
+      console.error('Error joining room:', error);
+      socket.emit('error', { message: 'Failed to join room' });
+    }
   });
 
   socket.on('startGame', ({ roomId }) => {
@@ -116,7 +132,11 @@ io.on('connection', (socket) => {
     db.prepare('UPDATE rooms SET status = ? WHERE id = ?').run('playing', roomId);
     
     const game = activeGames.get(roomId);
-    io.to(roomId).emit('gameStarted', { gameState: game.getState() });
+    io.to(roomId).emit('gameStarted', { 
+      gameState: game.getState(),
+      roomId: roomId,
+      gameType: room.game_type
+    });
   });
 
   socket.on('submitWord', ({ roomId, word }) => {
@@ -148,12 +168,17 @@ io.on('connection', (socket) => {
       return;
     }
     
-    const result = game.submitAnswer(socket.id, answerIndex);
-    socket.emit('answerResult', result);
-    
-    // Update player score in database
-    if (result.correct) {
-      db.prepare('UPDATE players SET score = score + ? WHERE id = ?').run(result.points, socket.id);
+    try {
+      const result = game.submitAnswer(socket.id, answerIndex);
+      socket.emit('answerResult', result);
+      
+      // Update player score in database
+      if (result.correct) {
+        db.prepare('UPDATE players SET score = score + ? WHERE id = ?').run(result.points, socket.id);
+      }
+    } catch (error) {
+      console.error('Error submitting answer:', error);
+      socket.emit('error', { message: 'Failed to submit answer' });
     }
   });
 
