@@ -1,0 +1,165 @@
+.trivia-game {
+  width: 100%;
+}
+
+.question-progress {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  padding: 0.5rem;
+  background: var(--background);
+  border-radius: 6px;
+}
+
+.question-card {
+  background: var(--background);
+  padding: 2rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.question-text-sinhala {
+  color: var(--primary);
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+.question-text-english {
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  font-weight: normal;
+  margin-bottom: 2rem;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.option-button {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.option-button:hover:not(:disabled) {
+  border-color: var(--primary);
+  transform: translateX(8px);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
+}
+
+.option-button.selected {
+  border-color: var(--accent);
+  background: rgba(255, 107, 53, 0.1);
+}
+
+.option-button.correct {
+  border-color: var(--success);
+  background: rgba(46, 125, 50, 0.2);
+}
+
+.option-button.incorrect {
+  border-color: #f44336;
+  background: rgba(244, 67, 54, 0.2);
+}
+
+.option-button.show-correct {
+  border-color: var(--success);
+  background: rgba(46, 125, 50, 0.2);
+}
+
+.option-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.option-sinhala {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: var(--primary);
+}
+
+.option-english {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.result-message {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.result-message.correct {
+  background: rgba(46, 125, 50, 0.2);
+  border: 2px solid var(--success);
+  color: #4caf50;
+}
+
+.result-message.incorrect {
+  background: rgba(244, 67, 54, 0.2);
+  border: 2px solid #f44336;
+  color: #ff5252;
+}
+
+.result-icon {
+  font-size: 1.5rem;
+}
+
+.final-scores {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.final-scores h3 {
+  color: var(--primary);
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.scores-section {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid var(--border);
+}
+
+.scores-section h3 {
+  color: var(--primary);
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+  .question-text-sinhala {
+    font-size: 1.2rem;
+  }
+  
+  .question-text-english {
+    font-size: 1rem;
+  }
+  
+  .question-card {
+    padding: 1.5rem;
+  }
+  
+  .option-button {
+    padding: 1rem;
+  }
+}
